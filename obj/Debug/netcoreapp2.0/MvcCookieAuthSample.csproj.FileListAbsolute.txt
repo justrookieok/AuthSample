@@ -1,0 +1,11 @@
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\bin\Debug\netcoreapp2.0\MvcCookieAuthSample.deps.json
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\bin\Debug\netcoreapp2.0\MvcCookieAuthSample.runtimeconfig.json
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\bin\Debug\netcoreapp2.0\MvcCookieAuthSample.runtimeconfig.dev.json
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\bin\Debug\netcoreapp2.0\MvcCookieAuthSample.dll
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\bin\Debug\netcoreapp2.0\MvcCookieAuthSample.pdb
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.csprojResolveAssemblyReference.cache
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.csproj.CoreCompileInputs.cache
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.AssemblyInfoInputs.cache
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.AssemblyInfo.cs
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.dll
+E:\Jesse\netcore\AuthSample\MvcCookieAuthSample\obj\Debug\netcoreapp2.0\MvcCookieAuthSample.pdb
