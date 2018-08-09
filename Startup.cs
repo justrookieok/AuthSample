@@ -14,6 +14,9 @@ using MvcCookieAuthSample.Models;
 using Microsoft.AspNetCore.Identity;
 using MvcCookieAuthSample.Services;
 using IdentityServer4.Services;
+using System.Reflection;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace MvcCookieAuthSample
 {
@@ -29,6 +32,9 @@ namespace MvcCookieAuthSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            const string connectionString = @"Data Source=(Local);Database=IdentityServer4.Quickstart.EntityFramework-2.0.0;trusted_connection=True;";
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -40,10 +46,24 @@ namespace MvcCookieAuthSample
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
-                .AddInMemoryApiResources(Config.GetResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddAspNetIdentity<ApplicationUser>()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    {
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationAssembly));
+                    };
+                })
+
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                    {
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationAssembly));
+                    };
+                })
                 .Services.AddScoped<IProfileService, ProfileService>();
 
             //.AddTestUsers(Config.GetTestUsers());
@@ -62,7 +82,7 @@ namespace MvcCookieAuthSample
                 options.Password.RequiredLength = 6;
             });
             services.AddScoped<Services.ConsentService>();
-            
+
             services.AddMvc();
         }
 
@@ -81,12 +101,49 @@ namespace MvcCookieAuthSample
             app.UseStaticFiles();
             //app.UseAuthentication();
             app.UseIdentityServer();
+            InitIdentityConfiguration(app);
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void InitIdentityConfiguration(IApplicationBuilder app)
+        {
+            using (var scope= app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+
+                if (!context.ApiResources.Any())
+                {
+                    foreach (var api in Config.GetResources())
+                    {
+                        context.ApiResources.Add(api.ToEntity());
+                    }
+
+                    context.SaveChanges();
+                }
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Config.GetClients())
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in Config.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+            }
         }
     }
 }
